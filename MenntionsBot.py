@@ -213,7 +213,7 @@ def check_mailbox():
                         sender_safe = html.escape(sender_name)
                         
                         text_to_send = (
-                            "🔔 <b>Уведомление! (через Шпиона)</b>\n\n"
+                            "🔔 <b>Уведомление!</b>\n\n"
                             f"👤 <b>От:</b> {sender_safe}\n"
                             f"💬 <i>«{safe_text}»</i>\n\n"
                             f"👉 <a href='{link}'>Перейти к сообщению</a>"
@@ -274,3 +274,4 @@ threading.Thread(target=check_mailbox, daemon=True).start()
 
 print("Бот-Радар запущен! Ожидаю сообщений...")
 bot.infinity_polling(timeout=10, long_polling_timeout=5)
+
