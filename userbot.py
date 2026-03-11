@@ -16,7 +16,7 @@ else:
 API_ID = 39875484
 API_HASH = "dbde6e9d01ba04bcea2f10609054a446"
 GROUP_ID = -1002446777647 
-RADAR_USERNAME = "ВСТАВЬ_НИК_БОТА_БЕЗ_@"  # <-- ПРОВЕРЬ ЭТО!
+RADAR_USERNAME = "MenntionsBot"  # <-- ПРОВЕРЬ ЭТО!
 SECRET_KEY = "AGENT_DATA_777"
 
 app = Client("my_account", api_id=API_ID, api_hash=API_HASH)
@@ -44,3 +44,4 @@ async def catch_tags(client, message):
 if __name__ == "__main__":
     print("🚀 Агент (Юзербот) успешно стартовал!")
     app.run()
+
