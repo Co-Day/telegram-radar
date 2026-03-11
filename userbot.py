@@ -1,61 +1,46 @@
 import asyncio
-# Фикс для работы на новых версиях Python (Render)
+import os
+import re
+from pyrogram import Client, filters
+
+# Фикс для работы на Render
 asyncio.set_event_loop(asyncio.new_event_loop())
 
-from pyrogram import Client, filters
-import re
+# --- ПРОВЕРКА ФАЙЛА СЕССИИ ---
+if os.path.exists("my_account.session"):
+    print("✅ Файл сессии найден! Пытаюсь войти...")
+else:
+    print("❌ ОШИБКА: Файл my_account.session не найден в корне проекта!")
 
 # --- ТВОИ ДАННЫЕ ---
 API_ID = 39875484
 API_HASH = "dbde6e9d01ba04bcea2f10609054a446"
-
-# ID группы ПЗ, которую слушаем
-GROUP_ID = -1002446777647 # Убедись, что ID именно такой (с -100)
-
-# Юзернейм твоего бота-радара (БЕЗ @)
-RADAR_USERNAME = "ВСТАВЬ_СЮДА_ЮЗЕРНЕЙМ_БОТА" 
-
-# Секретный ключ (должен быть таким же, как в коде Радара!)
+GROUP_ID = -1002446777647 
+RADAR_USERNAME = "ВСТАВЬ_НИК_БОТА_БЕЗ_@"  # <-- ПРОВЕРЬ ЭТО!
 SECRET_KEY = "AGENT_DATA_777"
 
 app = Client("my_account", api_id=API_ID, api_hash=API_HASH)
 
 @app.on_message(filters.chat(GROUP_ID))
 async def catch_tags(client, message):
-    # Берем текст или описание медиафайла
     text = message.text or message.caption
-    if not text:
-        return
-
-    # Ищем тэги
+    if not text: return
+    
     tags = set(re.findall(r'#\w+', text.lower()))
-    if not tags:
-        return
+    if not tags: return
 
-    # Определяем имя отправителя
-    if message.from_user:
-        sender = message.from_user.first_name
-    elif message.sender_chat:
-        sender = message.sender_chat.title
-    else:
-        sender = "Аноним"
-
-    # Создаем ссылку на сообщение (для закрытых групп)
+    sender = message.from_user.first_name if message.from_user else "Аноним"
     clean_cid = str(message.chat.id).replace("-100", "")
     link = f"https://t.me/c/{clean_cid}/{message.id}"
     
-    # Формируем пакет данных для Радара
-    # Формат: КЛЮЧ \n ТЭГИ \n ИМЯ \n ССЫЛКА \n ТЕКСТ
     payload = f"{SECRET_KEY}\n{' '.join(tags)}\n{sender}\n{link}\n{text}"
     
     try:
-        # Отправляем Радару в личку
         await client.send_message(RADAR_USERNAME, payload)
-        print(f"✅ Поймал тэги {tags}. Отправил Радару.")
+        print(f"📡 Тэг пойман и отправлен Радару!")
     except Exception as e:
-        print(f"❌ Ошибка отправки Радару: {e}")
+        print(f"❌ Ошибка пересылки: {e}")
 
 if __name__ == "__main__":
-    print("🚀 Агент (Юзербот) запущен!")
-    print(f"📡 Мониторинг группы {GROUP_ID} активен...")
+    print("🚀 Агент (Юзербот) успешно стартовал!")
     app.run()
