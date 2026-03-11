@@ -1,7 +1,9 @@
+import asyncio
+asyncio.set_event_loop(asyncio.new_event_loop())
+
 from pyrogram import Client, filters
 import sqlite3
 import re
-import asyncio
 
 # Данные из my.telegram.org
 API_ID = 39875484
@@ -67,3 +69,4 @@ if __name__ == "__main__":
     print("🚀 Агент запущен на Render!")
     print("📡 Мониторинг группы ПЗ активирован...")
     app.run()
+
