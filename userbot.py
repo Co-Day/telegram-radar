@@ -14,7 +14,7 @@ from pyrogram import Client, filters
 # --- ДАННЫЕ ---
 API_ID = 39875484
 API_HASH = "dbde6e9d01ba04bcea2f10609054a446"
-GROUP_ID = -5214640155 
+GROUP_ID = -1003831802577 
 RADAR_USERNAME = "MenntionsBot" 
 SECRET_KEY = "AGENT_DATA_777"
 
@@ -55,3 +55,4 @@ if __name__ == "__main__":
     else:
         print("❌ ФАЙЛ СЕССИИ НЕ НАЙДЕН!")
     app.run()
+
