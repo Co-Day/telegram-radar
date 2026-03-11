@@ -28,7 +28,6 @@ except sqlite3.OperationalError:
 sql.execute("CREATE TABLE IF NOT EXISTS queue (id INTEGER PRIMARY KEY AUTOINCREMENT, text TEXT, chat_username TEXT, chat_id TEXT, message_id INTEGER, sender_name TEXT)")
 db.commit()
 
-
 # --- СТАРТ ---
 @bot.message_handler(commands=['start'])
 def start(message):
@@ -50,7 +49,11 @@ def add_tag(message):
         return
 
     try:
-        _, tag, username, password = message.text.split()
+        parts = message.text.split(maxsplit=3)
+        if len(parts) < 4:
+            raise ValueError
+        
+        _, tag, username, password = parts
         tag = tag.lower()
 
         sql.execute("INSERT OR REPLACE INTO tags (tag, username, password, user_id, notifications_enabled) VALUES (?, ?, ?, NULL, 1)", (tag, username, password))
@@ -129,7 +132,11 @@ def process_login(message):
         return
 
     try:
-        tag, password = message.text.split()
+        parts = message.text.split(maxsplit=1)
+        if len(parts) < 2:
+            raise ValueError
+        
+        tag, password = parts
         tag = tag.lower()
 
         sql.execute("SELECT password FROM tags WHERE tag=?", (tag,))
@@ -158,8 +165,6 @@ def toggle_notifications(message):
         return
 
     tag, current_state = user_data
-
-    # Меняем состояние: 1 -> 0, 0 -> 1
     new_state = 0 if current_state == 1 else 1
 
     sql.execute("UPDATE tags SET notifications_enabled=? WHERE user_id=?", (new_state, message.from_user.id))
@@ -170,14 +175,13 @@ def toggle_notifications(message):
     else:
         bot.send_message(message.chat.id, f"🔔 <b>Уведомления включены!</b>\nЯ снова слежу за тэгом {tag} в чатах.\n\n<i>Чтобы выключить, снова нажмите /notify</i>")
 
-
 # ==========================================
 # --- ЧТЕЦ "ПОЧТОВОГО ЯЩИКА" (ОТ ЮЗЕРБОТА) ---
 # ==========================================
 def check_mailbox():
     while True:
         try:
-            time.sleep(1) # Проверяем каждую секунду
+            time.sleep(1)
             local_db = sqlite3.connect('tags.db', check_same_thread=False)
             local_sql = local_db.cursor()
             
