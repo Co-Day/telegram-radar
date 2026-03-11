@@ -14,7 +14,7 @@ import os
 # --- ДАННЫЕ ---
 API_ID = 39875484
 API_HASH = "dbde6e9d01ba04bcea2f10609054a446"
-GROUP_ID = -1002446777647 
+GROUP_ID = -5214640155 
 RADAR_USERNAME = "MenntionsBot" # Например: MyBestRadarBot
 SECRET_KEY = "AGENT_DATA_777"
 
@@ -46,3 +46,4 @@ if __name__ == "__main__":
     else:
         print("❌ ФАЙЛ СЕССИИ НЕ НАЙДЕН!")
     app.run()
+
