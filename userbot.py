@@ -28,10 +28,22 @@ async def catch_tags(client, message):
     tags = set(re.findall(r'#\w+', text.lower()))
     if not tags: return
 
-    sender = message.from_user.first_name if message.from_user else "Аноним"
+    # --- УМНОЕ ОПРЕДЕЛЕНИЕ ОТПРАВИТЕЛЯ ---
+    sender = "Аноним/Бот"
+    
+    if message.forward_from:
+        sender = message.forward_from.first_name # Если аккаунт открыт
+    elif message.forward_sender_name:
+        sender = message.forward_sender_name     # Если аккаунт скрыт
+    elif message.forward_from_chat:
+        sender = message.forward_from_chat.title # Если из канала
+    elif message.from_user:
+        sender = message.from_user.first_name    # Обычное сообщение
+    elif message.sender_chat:
+        sender = message.sender_chat.title       # От имени группы/анонимного админа
+    # ------------------------------------
 
     # --- ИСПРАВЛЕНИЕ ССЫЛКИ ---
-    # Убираем -100 или просто минус, чтобы ссылка стала рабочей
     chat_id_str = str(message.chat.id)
     if chat_id_str.startswith("-100"):
         clean_cid = chat_id_str[4:]
@@ -55,5 +67,3 @@ if __name__ == "__main__":
     else:
         print("❌ ФАЙЛ СЕССИИ НЕ НАЙДЕН!")
     app.run()
-
-
